@@ -1,3 +1,20 @@
+"""
+    Copyright (C) 2026 Alan Fine
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import sys
 sys.path.append(".venv/lib/python3.12/site-packages/")
 sys.path.append("./lib")
@@ -14,30 +31,22 @@ email = 'jm85nhsxzc@privaterelay.appleid.com' # PUT YOUR EMAIL HERE
                                               # doing this will allow OpenFoodFacts to contact you if they need to
 
 L1 = 25
-L2 = 8
-L3 = 7
+L2 = 23
+L3 = 24
 L4 = 1
 
 C1 = 12
 C2 = 16
 C3 = 20
 C4 = 21
-try:
-    GPIO.cleanup()
-except Exception:
-    pass
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-
-
-
-GPIO.setup(L1, GPIO.OUT)
-GPIO.setup(L2, GPIO.OUT)
-GPIO.setup(L3, GPIO.OUT)
-GPIO.setup(L4, GPIO.OUT)
-
-# Make sure to configure the input pins to use the internal pull-down resistors
+GPIO.setup(L1, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(L2, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(L3, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(L4, GPIO.OUT, initial=GPIO.LOW)
 
 GPIO.setup(C1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(C2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -193,17 +202,17 @@ def pollInput():
 def readLine(line, characters):
     GPIO.output(line, GPIO.HIGH)
     if(GPIO.input(C1) == 1):
-        return(characters[0])
+        result = characters[0]
     elif(GPIO.input(C2) == 1):
-        return(characters[1])
+        result = characters[1]
     elif(GPIO.input(C3) == 1):
-        return(characters[2])
+        result = characters[2]
     elif(GPIO.input(C4) == 1):
-        return(characters[3])
+        result = characters[3]
     else:
-        return('X')
+        result = 'X'
     GPIO.output(line, GPIO.LOW)
-
+    return(result)
 
 # Find our device using the VID (Vendor ID) and PID (Product ID)
 dev = core.find(idVendor=0x05e0, idProduct=0x1200)                  # IF YOU USE A DIFFERENT SCANER, CHANGE THESE VALUES
