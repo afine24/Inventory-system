@@ -16,7 +16,9 @@
 """
 
 import sqlite3
-
+import sys
+sys.path.append('./lib')
+import logger
 
 db = sqlite3.connect('/home/pi/the inventory project/inventorySystem.db')
 cursor = db.cursor()
@@ -28,12 +30,15 @@ def newData(code, name, size, brand, quantity):
     db.close()
 
 def queryData(code):
+    logger.log('attempting DB query of code: ' + code)
     try:
         cursor.execute("SELECT * FROM inventory WHERE code = " + code + ";")
     except:
+        logger.log('Code ' + code + ' not found in DB')
         return None
     else:
         data = cursor.fetchone()
+        logger.log('found match for code' + code + 'in DB')
         return (data)
 
 
