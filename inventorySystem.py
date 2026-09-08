@@ -120,7 +120,6 @@ def pollInput():
                 return
             except serial.SerialException as e:
                 print(f"\nError: Could not open or maintain connection to {SERIAL_PORT}.")
-                print("Please check that the scanner is plugged in and you have closed any other 'screen' sessions.")
                 print(f"Details: {e}")
                 sys.exit(1)
 
@@ -140,14 +139,26 @@ def readLine(line, characters):
     return(result)
 
 
-
+def askforinput():
+    lcdprint('To begin, selectan option')
+    option = pollInput()
+    if (option[0] == ';'):
+        match option:
+            case ';A':
+                lcdprint('Scan code now')
+                scanned = pollInput()
+                data = DBhandler.queryData(scanned)
+                print(data)
+            case ';B':
+                lcdprint('Scan code now')
+            case ';C':
+                lcdprint('Scan code now')
+            case ';D':
+                pass
 
 # begin the main loop here
 
-lcdprint('To begin, selectan option')
-print(pollInput())
-
-
+askforinput()
 
 
 

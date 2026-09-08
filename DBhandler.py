@@ -20,25 +20,27 @@ import sys
 sys.path.append('./lib')
 import logger
 
-db = sqlite3.connect('/home/pi/the inventory project/inventorySystem.db')
+db = sqlite3.connect('inventorySystem.db')
 cursor = db.cursor()
 
 
 def newData(code, name, size, brand, quantity):
-    db.connect()
-    Inventory.insert(code=code, product_name=name, product_size=size, brand=brand, quantity=quantity).execute()
-    db.close()
+    logger.log('[DB] creating new DB entry for ' + code)
+    code2 = code.lstrip('0')
+    cursor.execute('insert into inventory (code, product_name, product_size, brand, quantity) values (' + code + ', ' + name + ', ' + size + ', ' + brand + ', ' + quantity + ');')
 
 def queryData(code):
-    logger.log('attempting DB query of code: ' + code)
+    logger.log('[DB] attempting DB query of code: ' + code)
+    code2 = code.lstrip('0')
     try:
-        cursor.execute("SELECT * FROM inventory WHERE code = " + code + ";")
+        cursor.execute("SELECT * FROM inventory WHERE code = " + code2 + ";")
+        logger.log(code2)
     except:
-        logger.log('Code ' + code + ' not found in DB')
+        logger.log('[DB] Code ' + code + ' not found in DB')
         return None
     else:
         data = cursor.fetchone()
-        logger.log('found match for code' + code + 'in DB')
+        logger.log('[DB] found match for code' + code + 'in DB')
         return (data)
 
 

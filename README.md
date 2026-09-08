@@ -11,7 +11,7 @@ As for the hardware needed, i tried to keep it as simple as possible, you will n
 - [Raspberry Pi 4 B](https://www.canakit.com/raspberry-pi-4-4gb.html)
 - [16x2 I2C lcd display](https://www.amazon.com/SunFounder-Serial-Module-Display-Arduino/dp/B019K5X53O)
 - [4x4 matrix keypad](https://a.co/d/04VNssab)
-- [Symbol LS2208 barcode scanner (or similar)](https://a.co/d/0bTYwDl1)
+- [Symbol LS2208 barcode scanner (or similar), in serial mode](https://a.co/d/0bTYwDl1)
 - assorted breadboard wires
 
 I will eventually also put a link to a 3d printable case for the device but as of right now it is WIP.
