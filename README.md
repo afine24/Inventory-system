@@ -9,7 +9,7 @@ This project was created for my mom to help her keep track of what she has in he
 As for the hardware needed, i tried to keep it as simple as possible, you will need the following if you want to build this yourself:
 
 - [Raspberry Pi 4 B](https://www.canakit.com/raspberry-pi-4-4gb.html)
-- [16x2 I2C lcd display](https://www.amazon.com/SunFounder-Serial-Module-Display-Arduino/dp/B019K5X53O)
+- 320x240 LCD display
 - [4x4 matrix keypad](https://a.co/d/04VNssab)
 - [Symbol LS2208 barcode scanner (or similar), in serial mode](https://a.co/d/0bTYwDl1)
 - assorted breadboard wires
