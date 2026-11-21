@@ -33,14 +33,13 @@ def queryData(code):
 	logger.log('[DB] attempting DB query of code: ' + code)
 	code2 = code.lstrip('0')
 	try:
-		cursor.execute("SELECT * FROM inventory WHERE code = " + code2 + ";")
-		logger.log(code2)
+		cursor.execute("SELECT * FROM inventory WHERE code = ?", (code2,))
 	except:
 		logger.log('[DB] Code ' + code + ' not found in DB')
 		return None
 	else:
 		data = cursor.fetchone()
-		logger.log('[DB] found match for code' + code + 'in DB')
+		logger.log('[DB] found match for code ' + code + ' in DB')
 		return (data)
 		
 
@@ -51,7 +50,12 @@ def editData(code, diff):
 	code2 = code.lstrip('0')
 	testquery = queryData(code)
 	if (testquery == None):
-		
+		logger.log("[DB] cannot edit blank record")
+		return 1
+	else:
+		logger.log("[DB] record found... proceding to edit record")
+		newQuantity = testquery[5] + diff
+		cursor.execute("update inventory set quantity = %d where code = %s", (newQuantity, code2))
 
 
 
