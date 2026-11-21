@@ -25,32 +25,33 @@ cursor = db.cursor()
 
 
 def newData(code, name, size, brand, quantity):
-    logger.log('[DB] creating new DB entry for ' + code)
-    code2 = code.lstrip('0')
-    cursor.execute('insert into inventory (code, product_name, product_size, brand, quantity) values (' + code + ', ' + name + ', ' + size + ', ' + brand + ', ' + quantity + ');')
+	logger.log('[DB] creating new DB entry for ' + code)
+	code2 = code.lstrip('0')
+	cursor.execute('insert into inventory (code, product_name, product_size, brand, quantity) values (' + code2 + ', ' + name + ', ' + size + ', ' + brand + ', ' + str(quantity) + ');')
 
 def queryData(code):
-    logger.log('[DB] attempting DB query of code: ' + code)
-    code2 = code.lstrip('0')
-    try:
-        cursor.execute("SELECT * FROM inventory WHERE code = " + code2 + ";")
-        logger.log(code2)
-    except:
-        logger.log('[DB] Code ' + code + ' not found in DB')
-        return None
-    else:
-        data = cursor.fetchone()
-        logger.log('[DB] found match for code' + code + 'in DB')
-        return (data)
+	logger.log('[DB] attempting DB query of code: ' + code)
+	code2 = code.lstrip('0')
+	try:
+		cursor.execute("SELECT * FROM inventory WHERE code = " + code2 + ";")
+		logger.log(code2)
+	except:
+		logger.log('[DB] Code ' + code + ' not found in DB')
+		return None
+	else:
+		data = cursor.fetchone()
+		logger.log('[DB] found match for code' + code + 'in DB')
+		return (data)
+		
 
 
 
 def editData(code, diff):
-    db.connect()
-    data = Inventory.get_or_none(Inventory.code == code)
-    data.quantity += diff
-    data.save()
-    db.close()
+	logger.log('[DB] checking for existing entry for code ' + code)
+	code2 = code.lstrip('0')
+	testquery = queryData(code)
+	if (testquery == None):
+		
 
 
 
