@@ -1,6 +1,7 @@
-
+import sys
+sys.path.append(".")
 import time
-from . import lcdconfig
+import lcdconfig
 
 class LCD_2inch(lcdconfig.RaspberryPi):
 
