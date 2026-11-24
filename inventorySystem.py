@@ -16,6 +16,7 @@
 """
 
 import sys
+from time import sleep
 sys.path.append(".venv/lib/python3.12/site-packages/")
 sys.path.append("./lib")
 import serial
@@ -56,15 +57,14 @@ GPIO.setup(C4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 Font1 = ImageFont.truetype("./Font/srcSans3.ttf",30)
 srcsans = ImageFont.truetype("./Font/srcSans3.ttf",25)
-disp = LCD_2inch.LCD_2inch()
-# Initialize library.
-disp.Init()
+
+disp = lcd.getDispObject()
 
 def apiCall(UPCcode):
 	logger.log("attempting api call of code " + UPCcode)
 	# plug scanned UPC code into url for api call
 	url = 'https://world.openfoodfacts.net/api/v2/product/' + UPCcode + '?product_type=all&cc=us&lc=en&fields=product_name,quantity,brands&blame=0'
-	useragent = 'InventorySystem/0.1 (' + email + ')'
+	useragent = 'InventorySystem/0.2 (' + email + ')'
 	headers = {'accept': 'application/json', 'User-Agent': useragent}
 	response = requests.get(url, headers=headers)
 
@@ -72,7 +72,7 @@ def apiCall(UPCcode):
 		# Parse JSON data automatically
 		data = response.json()
 		# log all successful api calls to aid with troubleshooting failiures due to rate limiting
-		logger.log("api call successful, code: " + data["code"])
+		logger.log("api call successful, code: " + data.get("code") + " name: " + data.get("product", {}).get("product_name", "null"))
 		return(data)
 	else:
 		# log http errors
@@ -93,13 +93,18 @@ def pollInput():
 			char3 = readLine(L3, [";7",";8",";9",";C"])
 			char4 = readLine(L4, [";*",";0",";#",";D"])
 			if (char1 != 'X'):
+				sleep(0.2)
 				return(char1)
 			elif(char2 != 'X'):
+				sleep(0.2)
 				return(char2)
 			elif(char3 != 'X'):
+				sleep(0.2)
 				return(char3)
 			elif(char4 != 'X'):
+				sleep(0.2)
 				return(char4)
+
 			else:
 				pass
 			try:
@@ -113,7 +118,7 @@ def pollInput():
 		                    
 					time.sleep(0.01)
 			except KeyboardInterrupt:    # if a scan somehow throws a keyboard interrupt, catch it
-				print("Stopping program")
+				print("Keyboard Interrupt caught, logged and program resuming")
 				logger.log("Keyboard interrupt intercepted, exiting program")
 				return
 			except serial.SerialException as e:
@@ -172,15 +177,39 @@ while (True):
 				cleantext = ''
 				image = lcd.screen.drawFound(0, data[5])
 				draw = ImageDraw.Draw(image)
+				# write name of product to screen then display it
 				draw.text((20, 45), data[2], fill = "BLACK",font=Font1)
-				while (button != ';#'):
+				disp.ShowImage(image2)
+				# continually ask user for input then when they press enter, make it into an int and pass it to the DBhandler
+				# if user presses back at any point, send them back to the ready to scan screen and await scan
+				while (button != ';#' or button != ';*'):
 					button = pollInput()
 					if button[0] != ';':
 						continue
 					else:
-						cleantext = cleantext + button.replace(";", "")
-						draw.text((145, 112), cleantext, fill = "BLACK",font=srcsans)
+						number = button.replace(";", "")
+						if number == 'A':
+							continue
+						elif number == 'B':
+							continue
+						elif number == 'C':
+							continue
+						elif number == 'D':
+							continue
+						elif number == '*':
+							requesthome = False
+							selection = ';1'
+							continue
+						elif number == '#':
+							continue
+						cleantext = cleantext + number
+						draw.text((145, 150), cleantext, fill = "BLACK",font=srcsans)
 						disp.ShowImage(image)
+				if (len(cleantext) != 0 and button != ';*'):
+					DBhandler.editData(readcode, int(cleantext))
+				else:
+					pass
+
 
 		
 		

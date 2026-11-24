@@ -36,12 +36,16 @@ disp = LCD_2inch.LCD_2inch()
 disp.Init()
 # Clear display.
 disp.clear()
-#Set the backlight to 100
+# Set the backlight to 50%
 disp.bl_DutyCycle(50)
 
 fancyFont = ImageFont.truetype("./Font/fancyfont.ttf",25)
 srcsans = ImageFont.truetype("./Font/srcSans3.ttf",25)
 digitalFont = ImageFont.truetype("./Font/digitalfont.ttf",25)
+
+def getDispObject():
+	return disp
+
 
 class screen:
 	def drawHome():
