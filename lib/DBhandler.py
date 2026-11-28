@@ -49,8 +49,6 @@ with sqlite3.connect('inventorySystem.db') as db:
 				return (data)
 			
 
-
-
 	def editData(code, diff):
 		logger.log('[DB] checking for existing entry for code ' + code)
 		code2 = code.lstrip('0')
@@ -63,6 +61,13 @@ with sqlite3.connect('inventorySystem.db') as db:
 			newQuantity = testquery[5] + diff
 			cursor.execute("update inventory set quantity = ? where code = ?", (str(newQuantity), code2))
 		db.commit()
+
+	def pullInventory(page):
+		logger.log("[DB] pulling inventory from DB")
+		offset = page * 4
+		cursor.execute("SELECT * FROM inventory where quantity > 0 limit 4 offset ?", (offset,))
+		data = cursor.fetchall()
+		return data
 
 
 
